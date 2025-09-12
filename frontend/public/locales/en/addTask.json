@@ -1,0 +1,23 @@
+{
+  "title": "Add a task",
+  "subtitle": "Task details",
+  "inputs": {
+    "title": "Title",
+    "startDate": "Start date",
+    "endDate": "End date (optional)",
+    "urgent": "Urgent",
+    "description": "Description"
+  },
+  "buttons": {
+    "newTask": "New task",
+    "cancel": "Cancel"
+  },
+  "validation": {
+    "titleRequired": "Title is required",
+    "dateRequired": "Start date is required",
+    "timeRequired": "Start time is required"
+  },
+  "errors": {
+    "createFailed": "Failed to create task. Please try again."
+  }
+}

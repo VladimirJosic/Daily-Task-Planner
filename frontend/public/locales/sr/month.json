@@ -1,0 +1,23 @@
+{
+  "header": {
+    "back": "Nazad na zadatke",
+    "profile": "Korisnički profil"
+  },
+  "calendar": {
+    "title": "{month} {year}",
+    "selectedDate": "{day}. {month} {year}.",
+    "daysShort": ["N", "P", "U", "S", "Č", "P", "S"],
+    "months": [
+      "Januar", "Februar", "Mart", "April", "Maj", "Jun",
+      "Jul", "Avgust", "Septembar", "Oktobar", "Novembar", "Decembar"
+    ],
+    "noTasks": "Nema zadataka",
+    "dailyTasks": "Dnevni zadaci",
+    "tasksFor": "Zadaci za {day}. {month} {year}.",
+    "buttons": {
+      "close": "Zatvori",
+      "prev": "Prethodni",
+      "next": "Sledeći"
+    }
+  }
+}

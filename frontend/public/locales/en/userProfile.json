@@ -1,0 +1,18 @@
+{
+  "title": "User Data",
+  "form": {
+    "name": "Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "username": "Username"
+  },
+  "buttons": {
+    "back": "← Go back to tasks",
+    "update": "Update User",
+    "save": "Save Changes"
+  },
+  "messages": {
+    "loading": "Loading user data...",
+    "error": "Error fetching user data"
+  }
+}

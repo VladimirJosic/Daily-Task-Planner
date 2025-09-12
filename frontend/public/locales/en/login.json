@@ -1,0 +1,13 @@
+{
+  "title": "Log In",
+  "username": "Username",
+  "password": "Password",
+  "submit": "Sign In",
+  "forgotPassword": "Forgot password?",
+  "noAccount": "Don't have an account?",
+  "signUp": "Sign Up",
+  "errors": {
+    "required": "Both fields are required",
+    "invalidCredentials": "Invalid username or password"
+  }
+}

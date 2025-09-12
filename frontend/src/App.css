@@ -1,0 +1,60 @@
+.logo-split-wrapper {
+  position: relative;
+  width: 300px;   /* prilagodi veličinu loga */
+  height: 300px;  /* prilagodi veličinu loga */
+  margin: auto;
+  top: 50vh;
+  transform: translateY(-50%);
+  overflow: visible;
+}
+
+/* Polovine loga - pozicionirane apsolutno */
+.half {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 1.5s ease, opacity 1.5s ease;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Levi deo */
+.left {
+  left: 0;
+}
+
+.left img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  clip-path: inset(0 50% 0 0);
+}
+
+/* Desni deo */
+.right {
+  right: 0;
+}
+
+.right img {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  clip-path: inset(0 0 0 50%);
+}
+
+/* Animacija razdvajanja i nestajanja */
+.split-left {
+  transform: translateX(-150%);
+  opacity: 0;
+}
+
+.split-right {
+  transform: translateX(150%);
+  opacity: 0;
+}

@@ -1,0 +1,13 @@
+/* Reset margina i paddinga, spreči horizontalni scroll */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* sprečava horizontalni scroll */
+  height: 100%;       /* da visina zauzima ceo ekran */
+  box-sizing: border-box;
+}
+
+/* Da svi elementi računaju širinu/visinu uključujući padding i border */
+*, *::before, *::after {
+  box-sizing: inherit;
+}

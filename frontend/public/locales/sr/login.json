@@ -1,0 +1,13 @@
+{
+  "title": "Prijava",
+  "username": "Korisničko ime",
+  "password": "Lozinka",
+  "submit": "Prijavi se",
+  "forgotPassword": "Zaboravili ste lozinku?",
+  "noAccount": "Nemate nalog?",
+  "signUp": "Registrujte se",
+  "errors": {
+    "required": "Oba polja su obavezna",
+    "invalidCredentials": "Pogrešno korisničko ime ili lozinka"
+  }
+}

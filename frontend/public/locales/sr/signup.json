@@ -1,0 +1,23 @@
+{
+  "title": "Kreiraj nalog",
+  "form": {
+    "name": "Ime",
+    "lastName": "Prezime",
+    "username": "Korisničko ime",
+    "email": "Email",
+    "password": "Lozinka",
+    "submit": "Registruj se",
+    "loginLink": "Već imate nalog?",
+    "loginHere": "Prijavite se ovde"
+  },
+  "errors": {
+    "required": "Sva polja su obavezna",
+    "invalidEmail": "Unesite ispravnu email adresu",
+    "passwordLength": "Lozinka mora imati najmanje 6 karaktera",
+    "registrationFailed": "Registracija nije uspela. Pokušajte ponovo."
+  },
+  "success": {
+    "registration": "Uspešna registracija! Preusmeravam..."
+  },
+  "loading": "Registracija u toku..."
+}

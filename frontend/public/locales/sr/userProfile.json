@@ -1,0 +1,18 @@
+{
+  "title": "Korisnički podaci",
+  "form": {
+    "name": "Ime",
+    "lastName": "Prezime",
+    "email": "Email",
+    "username": "Korisničko ime"
+  },
+  "buttons": {
+    "back": "← Nazad na zadatke",
+    "update": "Ažuriraj podatke",
+    "save": "Sačuvaj promene"
+  },
+  "messages": {
+    "loading": "Učitavanje podataka...",
+    "error": "Greška pri učitavanju podataka"
+  }
+}

@@ -1,0 +1,222 @@
+.main-container {
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  width: 100%;
+}
+
+.card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 48px 32px 48px;
+  min-width: 420px;
+  max-width: 95vw;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.logo3 {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #ccc;
+  margin: 20px 0 0 20px; /* gornji i levi razmak */
+  position: relative;    /* može biti i static */
+  z-index: 10;
+}
+
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  font-size: 1.7rem;
+  font-weight: bold;
+  margin-bottom: 3px;
+  color: #2c205f;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #757575;
+  margin-bottom: 10px;
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.numCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f3eaff;
+  color: #a472d8;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  border: 1.5px solid #e2d6fa;
+  margin-right: 10px;
+}
+
+.input {
+  flex: 1;
+  background: #f6f2fd;
+  border: none;
+  border-radius: 9px;
+  padding: 9px 14px;
+  font-size: 1rem;
+  color: #5943a8;
+  margin-right: 6px;
+  outline: none;
+  transition: box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(164, 114, 216, 0.08);
+}
+
+.input:focus {
+  box-shadow: 0 2px 8px rgba(164, 114, 216, 0.17);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 2rem;
+  margin-top: 14px;
+  justify-content: center;
+}
+
+.addBtn {
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 30px;
+  font-size: 1.08rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.addBtn:hover {
+  background: #6442b7;
+}
+
+.cancelBtn {
+  background: #fff;
+  color: #1a1a1a;
+  border: 2px solid #ececec;
+  border-radius: 8px;
+  padding: 9px 26px;
+  font-size: 1.08rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: border 0.15s;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.is-urgent {
+  color: #2c205f;
+  font-weight: 700;
+}
+
+.cancelBtn:hover {
+  border: 2px solid #a472d8;
+}
+
+@media (max-width: 600px) {
+  .logo2 {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* Date label styling */
+.date-label-container {
+  margin-left: 60px;
+  margin-bottom: -12px;
+}
+
+.date-label-container label {
+  font-size: 0.85rem;
+  color: #757575;
+  font-weight: 500;
+}
+
+/* Time input specific styling */
+.input[type="time"] {
+  min-width: 100px;
+  flex: 0.5;
+}
+
+.input[type="date"] {
+  flex: 1;
+}
+
+/* Checkbox styling */
+.checkboxLabel input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #a472d8;
+  cursor: pointer;
+}
+
+.add-task-description {
+  min-height: 5rem;
+  resize: none;
+  padding: 0.8rem 1rem;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+@media (max-width: 500px) {
+  .card {
+    min-width: auto;
+    padding-inline: 20px;
+  }
+
+  .inputGroup {
+    flex-wrap: wrap;
+  }
+  
+  .input {
+    margin-right: auto;
+    padding: 9px 10px;
+  }
+  
+  .input[type="time"],
+  .input[type="date"] {
+    flex: 1 0 84%;
+    margin-inline: 2rem;
+  }
+  
+  .input[type="time"] {
+    margin-top: 8px;
+  }
+  
+  .date-label-container {
+    display: none;
+  }
+}

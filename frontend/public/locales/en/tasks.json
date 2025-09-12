@@ -1,0 +1,25 @@
+{
+  "header": {
+    "title": "All Tasks"
+  },
+  "controls": {
+    "newTask": "New task",
+    "searchPlaceholder": "Search tasks",
+    "actions": {
+      "sort": "Sort",
+      "share": "Share",
+      "delete": "Delete"
+    }
+  },
+  "columns": {
+    "title": "Title",
+    "date": "Date",
+    "type": "Type",
+    "priority": "Priority",
+    "description": "Description"
+  },
+  "status": {
+    "completed": "Completed",
+    "pending": "Pending"
+  }
+}

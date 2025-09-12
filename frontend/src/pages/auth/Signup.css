@@ -1,0 +1,152 @@
+body {
+  background: #B78FD6;
+  margin: 0;
+  padding: 0;
+}
+
+.signup-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  justify-content: center;
+  font-family: 'Arial', sans-serif;
+  box-sizing: border-box;
+  width: 90%; /* Dodato za bolju prilagodljivost */
+}
+
+.logo {
+  position: absolute;
+  width: 112px;
+  height: 112px;
+  left: 18px;
+  top: 14px;
+  background: #ddd;
+  border-radius: 55px;
+}
+
+.create-account {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #948f8f;
+  font-weight: normal;
+  text-align: center;
+}
+
+.signup-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-input {
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #D9D9D9;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #666;
+}
+
+.signup-button {
+  padding: 1rem;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s;
+  text-transform: uppercase;
+}
+
+.signup-button:hover {
+  background-color: #333;
+}
+
+.account-prompt {
+  margin-top: 1rem;
+  color: #666;
+  text-align: center;
+}
+
+.login-link {
+  color: #000;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.login-link:hover {
+  text-decoration: none;
+}
+
+/* ======================== */
+/* RESPONSIVE DESIGN BELOW */
+/* ======================== */
+
+@media (max-width: 768px) {
+  .signup-container {
+    padding: 1.5rem;
+  }
+
+  .logo {
+    width: 80px;
+    height: 80px;
+    left: 10px;
+    top: 10px;
+  }
+
+  .form-input,
+  .signup-button {
+    font-size: 0.95rem;
+    padding: 0.85rem;
+  }
+
+  .create-account {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .signup-container {
+    padding: 1rem;
+  }
+
+  .logo {
+    width: 64px;
+    height: 64px;
+    left: 8px;
+    top: 8px;
+  }
+
+  .form-input,
+  .signup-button {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
+
+  .create-account {
+    font-size: 1.2rem;
+  }
+
+  .account-prompt {
+    font-size: 0.9rem;
+  }
+}

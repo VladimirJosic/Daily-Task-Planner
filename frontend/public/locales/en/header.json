@@ -1,0 +1,11 @@
+{
+  "title": "ALL TASKS",
+  "buttons": {
+    "week": "Week",
+    "month": "Month"
+  },
+  "ariaLabels": {
+    "userProfile": "User profile",
+    "languageSwitcher": "Change language"
+  }
+}

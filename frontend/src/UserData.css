@@ -1,0 +1,122 @@
+.user-container {
+  max-width: 500px;
+  margin: 5rem auto;
+  padding: 2rem;
+  background-color: #f9f9f9; /* meni je lepse sa ovim, da li mora vez? */
+  border-radius: 20px;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.user-header {
+  font-size: 1.5rem;
+  margin-top: 40px;
+  margin-bottom: 2rem;
+  color: #948f8f;
+  font-weight: bold;
+  text-align: center;
+}
+
+.logo {
+  position: absolute;
+  width: 112px;
+  height: 112px;
+  left: 18px;
+  top: 14px;
+  border-radius: 55px;
+  background: #ddd;
+}
+
+/*
+.settings-icon {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #555;
+}
+*/
+
+.user-info {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #D9D9D9;
+  border-radius: 25px;
+}
+
+.back-button {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #FFD200;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.back-button:hover {
+  color: #E6BD00;
+}
+
+
+.form-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.form-column {
+  flex: 1;
+  min-width: 220px;
+}
+
+.avatar-icon {
+  display: block;
+  margin: 0 auto;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  box-shadow: none;
+  background-color: transparent; /* #EADDFF */
+  background: none;
+  border: none;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centriraj label i input horizontalno */
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #555;
+  text-align: center; /* Label na sredinu */
+  width: 100%; /* Da label zauzme celu širinu kolone */
+}
+
+.update-button {
+  margin: 2rem auto 0 auto;
+  width: fit-content;
+  padding: 0.35rem 0.9rem; /*0.5 1.2 */
+  background-color: #ffd200;
+  color: #333;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: background-color 0.3s;
+}
+
+.update-button:hover {
+  background-color: #e6bd00;
+}

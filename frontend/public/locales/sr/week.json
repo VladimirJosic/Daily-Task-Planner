@@ -1,0 +1,23 @@
+{
+  "title": "Nedeljni zadaci",
+  "days": {
+    "MON": "Ponedeljak",
+    "TUE": "Utorak",
+    "WED": "Sreda",
+    "THU": "Četvrtak",
+    "FRI": "Petak",
+    "SAT": "Subota",
+    "SUN": "Nedelja"
+  },
+  "navigation": {
+    "back": "Nazad na zadatke",
+    "userProfile": "Korisnički profil"
+  },
+  "errors": {
+    "noUserId": "Korisnički ID nije pronađen!"
+  },
+  "taskStatus": {
+    "active": "Završeno",
+    "inactive": "Na čekanju"
+  }
+}

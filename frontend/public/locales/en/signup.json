@@ -1,0 +1,23 @@
+{
+  "title": "Create an Account",
+  "form": {
+    "name": "Name",
+    "lastName": "Last name",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign up",
+    "loginLink": "Already have an account?",
+    "loginHere": "Login here"
+  },
+  "errors": {
+    "required": "All fields are required",
+    "invalidEmail": "Enter a valid email address",
+    "passwordLength": "Password must be at least 6 characters",
+    "registrationFailed": "Registration failed. Please try again."
+  },
+  "success": {
+    "registration": "Registration successful! Redirecting..."
+  },
+  "loading": "Registering..."
+}

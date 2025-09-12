@@ -1,0 +1,25 @@
+{
+  "header": {
+    "title": "Svi zadaci"
+  },
+  "controls": {
+    "newTask": "Novi zadatak",
+    "searchPlaceholder": "Pretraži zadatke",
+    "actions": {
+      "sort": "Sortiraj",
+      "share": "Podeli",
+      "delete": "Obriši"
+    }
+  },
+  "columns": {
+    "title": "Naslov",
+    "date": "Datum",
+    "type": "Tip",
+    "priority": "Prioritet",
+    "description": "Opis"
+  },
+  "status": {
+    "completed": "Završeno",
+    "pending": "Na čekanju"
+  }
+}

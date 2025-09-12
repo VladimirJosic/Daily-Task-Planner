@@ -1,0 +1,11 @@
+{
+  "title": "SVI ZADACI",
+  "buttons": {
+    "week": "Nedelja",
+    "month": "Mesec"
+  },
+  "ariaLabels": {
+    "userProfile": "Korisnički profil",
+    "languageSwitcher": "Promeni jezik"
+  }
+}

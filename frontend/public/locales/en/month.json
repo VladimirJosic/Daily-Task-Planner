@@ -1,0 +1,23 @@
+{
+  "header": {
+    "back": "Go back to tasks",
+    "profile": "User Profile"
+  },
+  "calendar": {
+    "title": "{month} {year}",
+    "selectedDate": "{month} {day}, {year}",
+    "daysShort": ["S", "M", "T", "W", "T", "F", "S"],
+    "months": [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ],
+    "noTasks": "No tasks",
+    "dailyTasks": "Daily tasks",
+    "tasksFor": "Tasks for {month} {day}, {year}",
+    "buttons": {
+      "close": "Close",
+      "prev": "Previous",
+      "next": "Next"
+    }
+  }
+}

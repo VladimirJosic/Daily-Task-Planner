@@ -1,0 +1,23 @@
+{
+  "title": "Dodaj zadatak",
+  "subtitle": "Detalji zadatka",
+  "inputs": {
+    "title": "Naslov",
+    "startDate": "Početni datum",
+    "endDate": "Završni datum (opciono)",
+    "urgent": "Hitno",
+    "description": "Opis"
+  },
+  "buttons": {
+    "newTask": "Novi zadatak",
+    "cancel": "Otkaži"
+  },
+  "validation": {
+    "titleRequired": "Naslov je obavezan",
+    "dateRequired": "Početni datum je obavezan",
+    "timeRequired": "Početno vreme je obavezno"
+  },
+  "errors": {
+    "createFailed": "Greška pri kreiranju zadatka. Molimo pokušajte ponovo."
+  }
+}

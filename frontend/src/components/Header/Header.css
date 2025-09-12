@@ -1,0 +1,158 @@
+.header-container {
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+/* fiksiraj logo u headeru */
+.logo2 {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #ccc;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: transparent;
+  height: auto;
+  padding: 20px 10px 20px 140px;
+  gap: 10px;
+}
+
+.header h2 {
+  margin: 0 10px;
+  font-weight: 500;
+  color: #5a4e61;
+  text-align: center;
+  flex-grow: 1; /* zauzmi centralni prostor */
+  min-width: 0; /* bitno da ne preliva */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+/* da se ne skupe dugmadi */
+.header-buttons {
+  display: flex;
+  gap: 15px;
+  height: 50px;
+  align-items: center;
+  flex-shrink: 0;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* više prostora unutar dugmeta */
+.header-mode-btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 20px;
+  background-color: #ffd900;
+  cursor: pointer;
+  height: 50px;
+  min-width: 100px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.header-mode-btn:hover {
+  background-color: #e6c400;
+}
+
+.user-profile {
+  background: #fff;
+  border-radius: 50%;
+  padding: 4px;
+  box-shadow: 0 2px 12px rgba(164, 114, 216, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.user-profile:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 800px) {
+    .logo2 {
+        display: none;
+    }
+    
+    .header {
+        padding-left: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px 20px 10px; /* ukloni levo punjenje da spakuje */
+    gap: 10px;
+  }
+
+  .user-profile {
+    margin-left: 6rem;
+  }
+
+  .logo {
+    position: static; /* pozicija postaje normalna u koloni */
+    transform: none;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+  }
+
+  .header h2 {
+    width: 100%;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.header h2 {
+  transition: all 0.3s ease;
+}
+
+.mode-btn {
+  min-width: 80px;
+}
+
+@media (max-width: 500px) {
+  .header-title {
+    display: none;
+  }
+  .user-profile {
+    margin-left: 1rem;
+  }
+
+  .logout-button span {
+    display: none;
+  }
+}
