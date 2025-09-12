@@ -12,7 +12,7 @@ View your tasks by week/month
 Ask Chatbot about your tasks
 i18n localisation
 
-Prerequisites
+Prerequisites:
 .NET 8 SDK
 Node.js (v18+)
 Ollama installed and running locally
