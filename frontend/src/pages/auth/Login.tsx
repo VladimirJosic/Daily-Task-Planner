@@ -21,7 +21,7 @@ const Login = () => {
     setSuccess("");
 
     if (!username || !password) {
-      setError(t('errors.required'));
+      setError(t('Username and password are required'));
       return;
     }
 
@@ -71,7 +71,7 @@ const Login = () => {
 
     } catch (err) {
       console.error("Login error:", err);
-      setError(t('errors.loginFailed'));
+      setError(t('Invalid username or password.'));
     } finally {
       setIsLoading(false);
     }
