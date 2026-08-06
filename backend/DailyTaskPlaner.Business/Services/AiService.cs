@@ -59,7 +59,7 @@ public class AiService : IAiService
             var prompt = $"Task:\n{taskJson}\n\nQuestion: {dto.Question}";
             var requestObj = new OllamaRequest
             {
-                Model = "gemma:2b",
+                Model = "qwen2.5:3b",
                 Prompt = prompt,
                 Stream = false
             };

@@ -72,7 +72,7 @@ const Signup = () => {
       setSuccess("Registration successful! Redirecting...");
 
       setTimeout(() => {
-        navigate("/signup");
+        navigate("/login");
       });
 
     } catch (err) {

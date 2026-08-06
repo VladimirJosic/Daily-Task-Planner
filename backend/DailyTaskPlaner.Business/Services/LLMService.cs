@@ -10,7 +10,7 @@ namespace DailyTaskPlaner.Business.Services;
 
 public class LLMService(AppDbContext _context, IDailyTaskService dailyTaskService) : ILLMService
 {
-    private IChatClient _chatClient = new OllamaApiClient(new Uri("http://localhost:11434/"), "gemma:2b");
+    private IChatClient _chatClient = new OllamaApiClient(new Uri("http://localhost:11434/"), "qwen2.5:3b");
     private IDailyTaskService _dailyTaskService = dailyTaskService;
     
     public async Task<string> ProcessQuery(int userId, string query, DateOnly? endDate = null)
