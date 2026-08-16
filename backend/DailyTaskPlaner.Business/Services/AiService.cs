@@ -19,7 +19,7 @@ public class AiService : IAiService
         _httpClient.BaseAddress = new Uri("http://localhost:11434");
     }
 
-    public async Task<string> AskAboutTaskAsync(AiQueryDto dto)
+    public async Task<string> AskAboutTaskAsync(AiQueryDto dto, int userId)
     {
         try
         {
@@ -28,7 +28,7 @@ public class AiService : IAiService
             {
                 TimeRange.Day => await _dbContext.DailyTasks
                     .Where(t =>
-                        t.UserId == dto.UserId &&
+                        t.UserId == userId &&
                         t.IsActive == true &&
                         t.StartDate >= now.Date &&
                         t.StartDate < now.Date.AddDays(1))
@@ -36,7 +36,7 @@ public class AiService : IAiService
 
                 TimeRange.Week => await _dbContext.DailyTasks
                     .Where(t =>
-                        t.UserId == dto.UserId &&
+                        t.UserId == userId &&
                         t.IsActive == true &&
                         t.StartDate >= now.Date &&
                         t.StartDate < now.Date.AddDays(7))
@@ -44,7 +44,7 @@ public class AiService : IAiService
 
                 _ => await _dbContext.DailyTasks
                     .Where(t =>
-                        t.UserId == dto.UserId &&
+                        t.UserId == userId &&
                         t.IsActive == true &&
                         t.StartDate >= now.Date &&
                         t.StartDate < now.Date.AddDays(31))

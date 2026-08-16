@@ -3,7 +3,7 @@ import './Week.css';
 import theLogo from './assets/logo.png';
 import TaskModal from './Week_TaskModal';
 import { Link } from 'react-router-dom';
-import { getMe } from './apiEndpoints';
+import { useAuth } from './pages/auth/AuthContext';
 
 const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"] as const;
 type Day = typeof days[number];
@@ -45,30 +45,17 @@ const Week: React.FC = () => {
   });
 
   const tasksApiUrl = import.meta.env.VITE_API_DAILY_TASK_URL || "http://localhost:3000/api/DailyTask";
-  const accessToken = localStorage.getItem("accessToken");
+  const { accessToken } = useAuth();
 
   useEffect(() => {
     if (!accessToken) {
       console.error("Nema access tokena!");
       return;
     }
-    
+
     const fetchUserAndTasks = async () => {
       try {
-        // 1. Dohvati trenutno ulogovanog korisnika
-        const userRes = await fetch(`${getMe}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        if (!userRes.ok) throw new Error("Neuspešan /me zahtev");
-
-        const user = await userRes.json();
-        const userId = user.id;
-
-        // 2. Izračunaj datum range
-        
+        // Izračunaj datum range
         const startDate = new Date(); // danas
         const endDate = new Date();
         endDate.setDate(startDate.getDate() + 6);
@@ -76,9 +63,9 @@ const Week: React.FC = () => {
         const startStr = startDate.toISOString();
         const endStr = endDate.toISOString();
 
-        // 3. Dohvati taskove za taj ID
+        // Dohvati taskove (backend uzima userId iz JWT tokena)
         const tasksRes = await fetch(
-          `${tasksApiUrl}/get-all-date-range/${userId}?startDate=${startStr}&endDate=${endStr}`,
+          `${tasksApiUrl}/get-all-date-range?startDate=${startStr}&endDate=${endStr}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

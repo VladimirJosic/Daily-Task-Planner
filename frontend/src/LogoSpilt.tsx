@@ -2,18 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import theLogo from './assets/logo.png';
 import './App.css';
+import { useAuth } from './pages/auth/AuthContext';
 
 const LogoSplit: React.FC = () => {
   const navigate = useNavigate();
   const [isSplit, setIsSplit] = useState(false);
   const [hideWrapper, setHideWrapper] = useState(false);
+  const { accessToken, isAuthLoading } = useAuth();
 
   useEffect(() => {
-    const checkAuthStatus = () => {
-      const accessToken = localStorage.getItem('accessToken');
-      const userId = localStorage.getItem('userId');
-      return accessToken && userId;
-    };
+    if (isAuthLoading) return;
 
     const splitTimeout = setTimeout(() => {
       setIsSplit(true);
@@ -21,10 +19,10 @@ const LogoSplit: React.FC = () => {
 
     const hideTimeout = setTimeout(() => {
       setHideWrapper(true);
-    }, 1000 + 1500); // 1.5s trajanje animacije
+    }, 2500);
 
     const navTimeout = setTimeout(() => {
-      if (checkAuthStatus()) {
+      if (accessToken) {
         navigate('/tasks');
       } else {
         navigate('/login');
@@ -36,7 +34,7 @@ const LogoSplit: React.FC = () => {
       clearTimeout(hideTimeout);
       clearTimeout(navTimeout);
     };
-  }, [navigate]);
+  }, [navigate, accessToken, isAuthLoading]);
 
   if (hideWrapper) {
     return null;

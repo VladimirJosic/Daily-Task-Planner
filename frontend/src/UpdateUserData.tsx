@@ -1,54 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import theLogo from './assets/logo.png';
 import { useNavigate } from 'react-router-dom';
 import avatarIcon from './assets/avatar-icon.png';
 import AIChat from './components/AIChat';
-import { getMe } from './apiEndpoints';
+import { useAuth } from './pages/auth/AuthContext';
 
 const UpdateUser = () => {
   const navigate = useNavigate();
 
-  const [userId, setUserId] = useState<number | null>(null);
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [error, setError] = useState<string>('');
-
-   const accessToken = localStorage.getItem("accessToken");
+  const [error] = useState<string>('');
+  const { accessToken, currentUser, refetchMe } = useAuth();
 
   useEffect(() => {
-    const fetchCurrentUserIdAndData = async () => {
-      try {
-        // Dohvati ID korisnika
-        const res = await fetch(`${getMe}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+    if (!currentUser) return;
 
-        if (!res.ok) {
-          setError("Failed to fetch user data");
-          return;
-        }
-
-        const data = await res.json();
-        console.log("User ID:", data.id);
-        
-      // Dohvati detaljne podatke korisnika po ID-ju
-        setName(data.name || '');
-        setLastName(data.lastName || '');
-        setUsername(data.username || '');
-        setEmail(data.email || '');
-
-      } catch (err) {
-        setError("Error fetching user data");
-        console.error(err);
-      }
-    };
-
-    fetchCurrentUserIdAndData();
-  }, []);
+    setName(currentUser.name || '');
+    setLastName(currentUser.lastName || '');
+    setUsername(currentUser.username || '');
+    setEmail(currentUser.email || '');
+  }, [currentUser]);
 
   const handleSave = async () => {
   try {
@@ -71,6 +45,7 @@ const UpdateUser = () => {
       return;
     }
 
+    await refetchMe();
     alert("User data updated!");
     navigate("/tasks");
 

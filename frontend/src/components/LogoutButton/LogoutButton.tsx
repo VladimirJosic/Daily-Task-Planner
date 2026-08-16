@@ -2,16 +2,15 @@ import { useNavigate } from 'react-router-dom';
 import { FiLogOut } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import './LogoutButton.css';
+import { useAuth } from '../../pages/auth/AuthContext';
 
 const LogoutButton = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('logoutButton');
+  const { clearAuth } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("loginTime");
+    clearAuth();
     navigate("/login");
   };
 

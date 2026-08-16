@@ -1,4 +1,3 @@
-import React, {useState, useEffect} from 'react';
 import './UserData.css';
 import theLogo from './assets/logo.png';
 import { useNavigate } from 'react-router-dom';
@@ -6,52 +5,17 @@ import avatarIcon from './assets/avatar-icon.png';
 import AIChat from './components/AIChat';
 import { LanguageSwitcher } from './components/LanguageSwitcher/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
-import { getMe } from './apiEndpoints';
+import { useAuth } from './pages/auth/AuthContext';
 
 const UserData = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('userProfile');
+  const { currentUser, isAuthLoading } = useAuth();
 
-  const [user, setUser] = useState<{ 
-    name: string; 
-    lastName: string; 
-    username: string; 
-    email: string 
-  } | null>(null);
+  if (isAuthLoading) return <div>{t('messages.loading')}</div>;
+  if (!currentUser) return <div>{t('messages.loading')}</div>;
 
-  const [error, setError] = useState<string>("");
-
-  const accessToken = localStorage.getItem("accessToken");
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-         const res = await fetch(`${getMe}`, {
-                  headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                  },
-                });
-
-       
-
-        if (!res.ok) {
-          setError("Failed to fetch user data");
-          return;
-        }
-
-        const data = await res.json();
-        setUser(data); 
-
-      } catch (err) {
-        setError("Error fetching user data");
-        console.error(err);
-      }
-    };
-
-    fetchUser();
-  }, [navigate]);
-
-  if (!user) return <div>{t('messages.loading')}</div>;
+  const user = currentUser;
 
   return (
     <div>  

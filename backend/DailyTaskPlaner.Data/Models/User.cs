@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace DailyTaskPlaner.Data.Models;
 
@@ -11,6 +12,8 @@ public class User
 
     [EmailAddress]
     public string Email { get; set; }
+
+    [JsonIgnore]
     public string PasswordHash { get; set; }
 
     public ICollection<DailyTask> OwnedTasks { get; set; } = new List<DailyTask>();

@@ -7,7 +7,6 @@
     }
     public class AiQueryDto
     {
-        public int UserId { get; set; }
         public string? Question { get; set; }
         public TimeRange Range { get; set; }
     }

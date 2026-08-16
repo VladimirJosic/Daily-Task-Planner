@@ -21,6 +21,7 @@ public class UsersController : ControllerBase
 
 
     [HttpGet("get-all")]
+    [Authorize]
     public async Task<IActionResult> GetAllUsers()
     {
         List<User> users = await _usersService.GetAllUsers();
@@ -29,6 +30,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("Search_user")]
+    [Authorize]
     public async Task<IActionResult> SearchUser([FromQuery] string? username, [FromQuery] string? email)
     {
         if (string.IsNullOrWhiteSpace(username) && string.IsNullOrWhiteSpace(email))
@@ -47,6 +49,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<IActionResult> GetUser(int id)
     {
         User? user = await _usersService.GetUserAsync(id);

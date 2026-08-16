@@ -11,11 +11,6 @@ namespace DailyTaskPlaner.Business.Services;
 public class DailyTaskService(AppDbContext _context) : IDailyTaskService
 {
 
-    public async Task<List<DailyTask>> GetAllTasksAsync()
-    {
-        return await _context.DailyTasks
-                        .ToListAsync();
-    }
     public async Task<List<DailyTask>> GetAllTasksByUserId(int userId)
     {
         return await _context.DailyTasks
@@ -42,13 +37,13 @@ public class DailyTaskService(AppDbContext _context) : IDailyTaskService
             .ToListAsync();
     }
 
-    public async Task<DailyTask?> GetTaskByIdAsync(int id)
+    public async Task<DailyTask?> GetTaskByIdAsync(int id, int userId)
     {
         return await _context.DailyTasks
-                        .FirstOrDefaultAsync(t => t.Id == id);
+                        .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
     }
 
-    public async Task<DailyTask> CreateTaskAsync(DailyTaskDto task)
+    public async Task<DailyTask> CreateTaskAsync(DailyTaskDto task, int userId)
     {
         var testTask = new DailyTask();
 
@@ -57,17 +52,17 @@ public class DailyTaskService(AppDbContext _context) : IDailyTaskService
         testTask.StartDate = task.StartDate;
         testTask.EndDate = task.EndDate;
         testTask.IsUrgent = task.IsUrgent;
-        testTask.UserId = task.UserId;
+        testTask.UserId = userId;
 
         await _context.DailyTasks.AddAsync(testTask);
         await _context.SaveChangesAsync();
         return testTask;
     }
 
-    public async Task<ResultPackage<bool>> DeleteTaskAsync(int id)
+    public async Task<ResultPackage<bool>> DeleteTaskAsync(int id, int userId)
     {
         DailyTask? task = await _context.DailyTasks.FindAsync(id);
-        if (task == null)
+        if (task == null || task.UserId != userId)
         {
             return new ResultPackage<bool>(false, ResultStatus.NotFound, $"Task with Id {id} not found");
         }
@@ -85,10 +80,10 @@ public class DailyTaskService(AppDbContext _context) : IDailyTaskService
     }
 
 
-    public async Task<ResultPackage<bool>> UpdateTaskAsync(int id, DailyTaskDto task)
+    public async Task<ResultPackage<bool>> UpdateTaskAsync(int id, DailyTaskDto task, int userId)
     {
         var existingTask = await _context.DailyTasks.FindAsync(id);
-        if (existingTask is null)
+        if (existingTask is null || existingTask.UserId != userId)
         {
             return new ResultPackage<bool>(false, ResultStatus.NotFound, $"Task with Id {id} not found");
         }
@@ -134,9 +129,9 @@ public class DailyTaskService(AppDbContext _context) : IDailyTaskService
             return ShareTaskResult.FriendNotFound;
         }
 
-        // Get all tasks to be shared
+        // Get all tasks to be shared (must be owned by the caller)
         var tasks = await _context.DailyTasks
-            .Where(t => taskIds.Contains(t.Id))
+            .Where(t => t.UserId == userId && taskIds.Contains(t.Id))
             .ToListAsync();
 
         // Check if all tasks were found
@@ -209,10 +204,10 @@ public class DailyTaskService(AppDbContext _context) : IDailyTaskService
         return result;
     }
 
-    public async Task<ResultPackage<bool>> LogicalDeleteTaskAsync(int id)
+    public async Task<ResultPackage<bool>> LogicalDeleteTaskAsync(int id, int userId)
     {
         DailyTask? task = await _context.DailyTasks.FindAsync(id);
-        if (task == null)
+        if (task == null || task.UserId != userId)
         {
             return new ResultPackage<bool>(false, ResultStatus.NotFound, $"Task with Id {id} not found");
         }

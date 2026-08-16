@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Month.css";
 import { Link } from 'react-router-dom';
-import { getMe } from './apiEndpoints';
+import { useAuth } from './pages/auth/AuthContext';
 
 const daysShort = ["S", "M", "T", "W", "T", "F", "S"];
 const months = [
@@ -37,28 +37,17 @@ const Month: React.FC = () => {
   const daysInMonth = getDaysInMonth(currentYear, currentMonth);
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();
   const tasksApiUrl = import.meta.env.VITE_API_DAILY_TASK_URL || "http://localhost:3000/api/DailyTask";
-   const accessToken = localStorage.getItem("accessToken");
-  
+  const { accessToken } = useAuth();
+
   useEffect(() => {
     const fetchMonthlyTasks = async () => {
       try {
-         // 1. Dohvati trenutno ulogovanog korisnika
-                const userRes = await fetch(`${getMe}`, {
-                  headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                  },
-                });
-        
-                if (!userRes.ok) throw new Error("Neuspešan /me zahtev");
-        
-                const user = await userRes.json();
-                const userId = user.id;
-
         const startDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, "0")}-01`;
         const endDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, "0")}-${getDaysInMonth(currentYear, currentMonth)}`;
-        
+
+        // Backend uzima userId iz JWT tokena
         const tasksRes = await fetch(
-          `${tasksApiUrl}/get-all-date-range/${userId}?startDate=${startDate}&endDate=${endDate}`,
+          `${tasksApiUrl}/get-all-date-range?startDate=${startDate}&endDate=${endDate}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

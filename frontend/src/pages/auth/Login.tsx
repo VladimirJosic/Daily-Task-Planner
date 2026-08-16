@@ -4,11 +4,13 @@ import './Login.css';
 import { login } from '../../apiEndpoints';
 import theLogo from '../../assets/logo.png';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from './AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('login');
-  
+  const { setTokens } = useAuth();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -53,11 +55,8 @@ const Login = () => {
 
       const result = await loginResponse.json();
 
-      localStorage.setItem("userId", result.userId.toString());
-      localStorage.setItem("accessToken", result.accessToken);
-      localStorage.setItem("refreshToken", result.refreshToken);
-      localStorage.setItem("loginTime", new Date().getTime().toString());
-      
+      setTokens(result.accessToken, result.refreshToken);
+
       setSuccess(t('success.login'));
 
       setTimeout(() => {

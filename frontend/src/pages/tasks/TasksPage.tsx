@@ -8,9 +8,11 @@ import { getAllTasks, deactivateTask, shareTask, getSharedTasks, getAllUsers, se
 import DateFormatter from '../../components/DateFormatter';
 import type { SharedTask, User } from './dtos';
 import { FiX } from 'react-icons/fi';
+import { useAuth } from '../auth/AuthContext';
 
 
 const TasksPage: React.FC = () => {
+  const { accessToken, currentUser } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,26 +29,25 @@ const TasksPage: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const userId = localStorage.getItem('userId');
-        if (!userId) {
-          throw new Error('User ID not found in local storage');
-        }
+      if (!accessToken || !currentUser?.id) return;
 
-        // Fetch tasks
-        const tasksResponse = await fetch(`${getAllTasks}/${userId}`);
+      try {
+        // Fetch tasks (backend uzima userId iz JWT tokena)
+        const tasksResponse = await fetch(getAllTasks, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
         if (!tasksResponse.ok) throw new Error('Failed to fetch tasks');
         const tasksData = await tasksResponse.json();
         setTasks(tasksData.filter((task: Task) => task.isActive !== false));
 
         // Fetch all users
-        const usersResponse = await fetch(getAllUsers);
+        const usersResponse = await fetch(getAllUsers, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
         if (!usersResponse.ok) throw new Error('Failed to fetch users');
         const usersData: User[] = await usersResponse.json();
 
-        const currentUserId = parseInt(userId);
-        const filteredUsers = usersData.filter(user => user.id !== currentUserId);
-        setFriends(filteredUsers);
+        setFriends(usersData.filter(user => user.id !== currentUser.id));
 
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -56,7 +57,7 @@ const TasksPage: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [accessToken, currentUser?.id]);
 
   const handleCheckboxChange = (taskId: number, isChecked: boolean) => {
     setSelectedTaskIds(prev => 
@@ -65,23 +66,22 @@ const TasksPage: React.FC = () => {
   };
 
   const handleSearch = async () => {
-    const userId = localStorage.getItem('userId');
-    if (!userId) return;
+    if (!accessToken) return;
 
     try {
       setLoading(true);
-    
-      const params: Record<string, string> = {
-        userId: userId.toString()
-      };
+
+      const params: Record<string, string> = {};
 
       if (searchTerm) {
         params.inputQuery = searchTerm;
       }
 
       const queryString = new URLSearchParams(params).toString();
-      
-      const response = await fetch(`${searchTasks}?${queryString}`);
+
+      const response = await fetch(`${searchTasks}?${queryString}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
 
       if (!response.ok) {
         throw new Error(response.status === 404 
@@ -105,13 +105,17 @@ const TasksPage: React.FC = () => {
       for (const taskId of selectedTaskIds) {
         const response = await fetch(`${deactivateTask}/${taskId}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
         });
         if (!response.ok) throw new Error(`Failed to delete task ${taskId}`);
       }
 
-      const userId = localStorage.getItem('userId');
-      const response = await fetch(`${getAllTasks}/${userId}`);
+      const response = await fetch(getAllTasks, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       const data = await response.json();
       setTasks(data.filter((task: Task) => task.isActive !== false));
       setSelectedTaskIds([]);
@@ -128,10 +132,11 @@ const TasksPage: React.FC = () => {
     setShareError(null);
     
     try {
-      const userId = localStorage.getItem('userId');
-      if (!userId) throw new Error('User ID not found');
-      
-      const getSharedTasksResponse = await fetch(`${getSharedTasks}?userId=${userId}`);
+      if (!currentUser?.id) throw new Error('User ID not found');
+
+      const getSharedTasksResponse = await fetch(getSharedTasks, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       if (!getSharedTasksResponse.ok) throw new Error('Failed to fetch shared tasks');
       
       const sharedTasks = await getSharedTasksResponse.json();
@@ -154,14 +159,15 @@ const TasksPage: React.FC = () => {
     setShareSuccess(null);
 
     try {
-      const userId = localStorage.getItem('userId');
-      if (!userId) throw new Error('User ID not found');
+      if (!currentUser?.id) throw new Error('User ID not found');
 
       const response = await fetch(`${shareTask}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify({
-          UserId: parseInt(userId),
           FriendId: selectedFriendId,
           TaskIds: selectedTaskIds
         })
@@ -190,7 +196,9 @@ const TasksPage: React.FC = () => {
       setSelectedFriendId(null);
       
       // Refresh shared tasks list
-      const sharedResponse = await fetch(`${getSharedTasks}?userId=${userId}`);
+      const sharedResponse = await fetch(getSharedTasks, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       if (sharedResponse.ok) {
         const sharedData = await sharedResponse.json();
         setSharedTasks(sharedData.tasks || []);

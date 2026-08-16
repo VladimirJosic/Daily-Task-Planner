@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './AIChat.css';
 import { queryLLM, clearLLMChatHistory } from '../apiEndpoints';
+import { useAuth } from '../pages/auth/AuthContext';
 
 interface Message {
   text: string;
@@ -8,6 +9,7 @@ interface Message {
 }
 
 const AIChat: React.FC = () => {
+  const { accessToken } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -42,9 +44,9 @@ const AIChat: React.FC = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
-            UserId: localStorage.getItem('userId'),
             Query: message,
             Date: dateOnly
           })
@@ -77,9 +79,8 @@ const AIChat: React.FC = () => {
       const response = await fetch(clearLLMChatHistory, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(localStorage.getItem('userId'))
       });
 
       if (!response.ok) {

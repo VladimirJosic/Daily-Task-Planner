@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import { createTask } from "../../apiEndpoints";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../auth/AuthContext";
 
 const AddTask: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -15,20 +16,16 @@ const AddTask: React.FC = () => {
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
   const { t } = useTranslation('addTask');
+  const { accessToken } = useAuth();
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
         const startDateTime = new Date(`${startDate}T${startTime}`);
-        const endDateTime = endDate 
+        const endDateTime = endDate
         ? new Date(`${endDate}T${endTime}`)
         : new Date(`${startDate}T${startTime}`);
-
-        const userId = localStorage.getItem('userId');
-        if (!userId) {
-        throw new Error("User ID not found");
-        }
 
         const taskData = {
         Title: title,
@@ -36,14 +33,13 @@ const AddTask: React.FC = () => {
         StartDate: startDateTime.toISOString(),
         EndDate: endDateTime.toISOString(),
         IsUrgent: isUrgent,
-        UserId: parseInt(userId, 10),
         };
 
       const response = await fetch(createTask, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${accessToken}`
         },
         body: JSON.stringify(taskData),
       });
