@@ -10,6 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.AI;
+using OllamaSharp;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.LoadDeveloperConfiguration();
@@ -27,6 +29,25 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddHttpClient<IAiService, AiService>();
 builder.Services.AddScoped<ILLMService, LLMService>();
 
+// Klijent ka Ollami se dobija iz fabrike HTTP klijenata, pa se osnovna
+// konekcija ponovo koristi izmedju zahteva. Vremensko ogranicenje se postavlja
+// izricito: podrazumevanih 100 sekundi je manje od trajanja inferencije pod
+// opterecenjem, pa bi zahtevi otkazivali pre nego sto model zavrsi.
+var ollamaBaseUrl = builder.Configuration["Ollama:BaseUrl"] ?? "http://localhost:11434/";
+var ollamaModel = builder.Configuration["Ollama:Model"] ?? "qwen2.5:3b";
+
+builder.Services.AddHttpClient("ollama", client =>
+{
+    client.BaseAddress = new Uri(ollamaBaseUrl);
+    client.Timeout = TimeSpan.FromMinutes(10);
+});
+
+builder.Services.AddScoped<IChatClient>(sp =>
+{
+    var http = sp.GetRequiredService<IHttpClientFactory>().CreateClient("ollama");
+    return new OllamaApiClient(http, ollamaModel);
+});
+
 builder.Services.AddScoped<PasswordHasher<User>>();
 
 
@@ -42,7 +63,7 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API for managing daily tasks with user authentication",
     });
 
-    // Dodaj eksplicitnu OpenAPI 3.0 podršku za JWT
+    // Dodaj eksplicitnu OpenAPI 3.0 podrï¿½ku za JWT
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,

@@ -8,9 +8,9 @@ using System.Text.Json;
 
 namespace DailyTaskPlaner.Business.Services;
 
-public class LLMService(AppDbContext _context, IDailyTaskService dailyTaskService) : ILLMService
+public class LLMService(AppDbContext _context, IDailyTaskService dailyTaskService, IChatClient chatClient) : ILLMService
 {
-    private IChatClient _chatClient = new OllamaApiClient(new Uri("http://localhost:11434/"), "qwen2.5:3b");
+    private readonly IChatClient _chatClient = chatClient;
     private IDailyTaskService _dailyTaskService = dailyTaskService;
     
     public async Task<string> ProcessQuery(int userId, string query, DateOnly? endDate = null)
@@ -33,23 +33,16 @@ public class LLMService(AppDbContext _context, IDailyTaskService dailyTaskServic
         }
 
         string tasksJson = BuildTasksJson(tasks);
-        var history = await _context.AIChatHistory
-            .Where(ai => ai.UserId == userId && ai.IsDeleted == false)
-            .OrderBy(ai => ai.Timestamp)
-            .ToListAsync();
 
+        // Prompt se gradi iskljucivo od trenutnog stanja taskova i tekuceg
+        // pitanja. Razgovor se belezi u AIChatHistory, ali se ne vraca u prompt:
+        // upit je bez stanja, pa duzina prompta zavisi samo od broja taskova, a
+        // ne i od toga koliko je razgovor odmakao.
         List<ChatMessage> chatHistory = new List<ChatMessage>
         {
-            new ChatMessage(ChatRole.System, AddLLMCommands(tasksJson))
+            new ChatMessage(ChatRole.System, AddLLMCommands(tasksJson)),
+            new ChatMessage(ChatRole.User, query)
         };
-
-        foreach (var item in history)
-        {
-            var chatRole = item.Role == "user" ? ChatRole.User : ChatRole.Assistant;
-            chatHistory.Add(new ChatMessage(chatRole, item.Content));
-        }
-
-        chatHistory.Add(new ChatMessage(ChatRole.User, query));
 
         _context.AIChatHistory.Add(new AIChatHistory
         {
