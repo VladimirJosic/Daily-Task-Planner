@@ -19,3 +19,5 @@ export const deactivateTask = `${API_URL}/DailyTask/deactivate`;
 export const shareTask = `${API_URL}/DailyTask/share`;
 export const getSharedTasks = `${API_URL}/DailyTask/get-all-shared`;
 export const searchTasks = `${API_URL}/DailyTask/search`;
+
+export const deleteSharedTask = `${API_URL}/DailyTask/DeleteSharedTask`;

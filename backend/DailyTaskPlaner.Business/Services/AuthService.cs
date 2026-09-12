@@ -46,7 +46,7 @@ namespace DailyTaskPlaner.Business.Services
             {
                 UserId = user.Id,
                 Token = GenerateRefreshToken(),
-                ExpiresOnUtc = DateTime.UtcNow.AddHours(2)
+                ExpiresOnUtc = DateTime.UtcNow.AddDays(7)
             };
 
             _context.RefreshTokens.Add(refreshToken);

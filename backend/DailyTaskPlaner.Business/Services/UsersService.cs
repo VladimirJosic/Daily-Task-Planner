@@ -10,39 +10,6 @@ namespace DailyTaskPlaner.Business.Services;
 
 public class UsersService(AppDbContext _context, PasswordHasher<User> passwordHasher) : IUsersService
 {
-    public async Task<ResultPackage<User>> CreateUserAsync(CreateUserDto newUser)
-    {
-        User? existingUser = await _context.Users
-            .FirstOrDefaultAsync(u => u.Username == newUser.Username);
-
-        if (existingUser is not null)
-        {
-            return new ResultPackage<User>(ResultStatus.BadRequest, "User with that username already exists");
-        }
-
-        User user = new User
-        {
-            Name = newUser.Name,
-            LastName = newUser.LastName,
-            Username = newUser.Username,
-            Email = newUser.Email,
-        };
-        user.PasswordHash = passwordHasher.HashPassword(user, newUser.Password);
-
-        await _context.Users.AddAsync(user);
-        
-        try
-        {
-            await _context.SaveChangesAsync();
-            return new ResultPackage<User>(user, ResultStatus.Created, "User created successfully");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Failed to save to database: {0}", ex.InnerException);
-            return new ResultPackage<User>(ResultStatus.InternalServerError, "Error saving to databse");
-        }
-
-    }
     public async Task<User?> GetUserAsync(int id)
     {
         User? user = await _context.Users.FindAsync(id);

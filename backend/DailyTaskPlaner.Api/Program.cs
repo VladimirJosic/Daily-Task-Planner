@@ -15,6 +15,7 @@ using OllamaSharp;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.LoadDeveloperConfiguration();
+builder.LoadDotEnv();
 
 
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -26,13 +27,12 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddScoped<IUsersService, UsersService>(); // Dependency Injection
 builder.Services.AddScoped<IDailyTaskService, DailyTaskService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddHttpClient<IAiService, AiService>();
 builder.Services.AddScoped<ILLMService, LLMService>();
 
-// Klijent ka Ollami se dobija iz fabrike HTTP klijenata, pa se osnovna
-// konekcija ponovo koristi izmedju zahteva. Vremensko ogranicenje se postavlja
-// izricito: podrazumevanih 100 sekundi je manje od trajanja inferencije pod
-// opterecenjem, pa bi zahtevi otkazivali pre nego sto model zavrsi.
+// The Ollama client comes from the HTTP client factory, so the underlying connection
+// is reused between requests. The timeout is set explicitly: the default of 100
+// seconds is shorter than inference takes under load, so requests would be cancelled
+// before the model finished.
 var ollamaBaseUrl = builder.Configuration["Ollama:BaseUrl"] ?? "http://localhost:11434/";
 var ollamaModel = builder.Configuration["Ollama:Model"] ?? "qwen2.5:3b";
 
@@ -63,7 +63,7 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API for managing daily tasks with user authentication",
     });
 
-    // Dodaj eksplicitnu OpenAPI 3.0 podr�ku za JWT
+    // Explicit OpenAPI 3.0 support for JWT
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,

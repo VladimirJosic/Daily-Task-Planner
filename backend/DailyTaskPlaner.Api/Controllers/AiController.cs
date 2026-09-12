@@ -11,11 +11,9 @@ namespace DailyTaskPlaner.Api.Controllers;
 [Authorize]
 public class AiController : ControllerBase
 {
-    private readonly IAiService _aiService;
     private readonly ILLMService _llmService;
-    public AiController(IAiService aiService, ILLMService llmService)
+    public AiController(ILLMService llmService)
     {
-        _aiService = aiService;
         _llmService = llmService;
     }
 
@@ -33,12 +31,5 @@ public class AiController : ControllerBase
     {
         await _llmService.ClearChatHistoryLogical(GetUserId());
         return Ok("Chat history cleared");
-    }
-
-    [HttpPost("test")]
-    public async Task<IActionResult> TestAI([FromBody] AiQueryDto dto)
-    {
-        var response = await _aiService.AskAboutTaskAsync(dto, GetUserId());
-        return Ok(response);
     }
 }

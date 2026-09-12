@@ -37,8 +37,10 @@ public class AppDbContext : DbContext
             .HasIndex(u => u.Email)
             .IsUnique();
 
+        // The key is (task, recipient), so one task can be shared with several users while
+        // each of them receives it at most once.
         modelBuilder.Entity<SharedTask>()
-           .HasKey(st => new { st.UserId, st.DailyTaskId }); 
+           .HasKey(st => new { st.DailyTaskId, st.FriendId });
 
         modelBuilder.Entity<SharedTask>()
             .HasOne(st => st.User)

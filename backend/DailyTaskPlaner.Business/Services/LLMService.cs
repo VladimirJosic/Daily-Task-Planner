@@ -34,10 +34,10 @@ public class LLMService(AppDbContext _context, IDailyTaskService dailyTaskServic
 
         string tasksJson = BuildTasksJson(tasks);
 
-        // Prompt se gradi iskljucivo od trenutnog stanja taskova i tekuceg
-        // pitanja. Razgovor se belezi u AIChatHistory, ali se ne vraca u prompt:
-        // upit je bez stanja, pa duzina prompta zavisi samo od broja taskova, a
-        // ne i od toga koliko je razgovor odmakao.
+        // The prompt is built only from the current state of the tasks and the current
+        // question. The conversation is recorded in AIChatHistory but never fed back into
+        // the prompt: the query is stateless, so prompt length depends only on the number
+        // of tasks and not on how far the conversation has gone.
         List<ChatMessage> chatHistory = new List<ChatMessage>
         {
             new ChatMessage(ChatRole.System, AddLLMCommands(tasksJson)),
@@ -88,12 +88,14 @@ public class LLMService(AppDbContext _context, IDailyTaskService dailyTaskServic
         {
             item.IsDeleted = true;
         }
+
+        await _context.SaveChangesAsync();
     }
 
     public async Task ClearChatHistoryPhysical(int userId)
     {
-        await _context.DailyTasks
-            .Where(t => t.UserId == userId)
+        await _context.AIChatHistory
+            .Where(ai => ai.UserId == userId)
             .ExecuteDeleteAsync();
     }
 

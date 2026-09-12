@@ -128,6 +128,18 @@ public class DailyTaskController : ControllerBase
     }
 
 
+    [HttpDelete("DeleteSharedTask/{id}")]
+    public async Task<IActionResult> DeleteSharedTask(int id)
+    {
+        ResultPackage<bool> deleted = await _dailyTaskService.DeleteSharedTaskAsync(id, GetUserId());
+        if (deleted.Status == ResultStatus.NotFound)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
+
     [HttpPut("deactivate/{id}")]
     public async Task<IActionResult> LogicalDeleteTask(int id)
     {

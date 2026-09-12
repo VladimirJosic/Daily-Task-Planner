@@ -192,6 +192,7 @@ public class DailyTaskService(AppDbContext _context) : IDailyTaskService
 
         var result = sharedTasks.Select(st => new GetSharedTaskDto
         {
+            Id = st.DailyTaskId,
             UserId = st.UserId,
             FriendId = st.FriendId,
             Title = st.DailyTask.Title,
@@ -202,6 +203,27 @@ public class DailyTaskService(AppDbContext _context) : IDailyTaskService
         }).ToList();
 
         return result;
+    }
+
+    public async Task<ResultPackage<bool>> DeleteSharedTaskAsync(int id, int userId)
+    {
+        SharedTask? task = await _context.SharedTasks
+            .FirstOrDefaultAsync(st => st.DailyTaskId == id && st.FriendId == userId);
+        if (task == null)
+        {
+            return new ResultPackage<bool>(false, ResultStatus.NotFound, $"Shared task with Id {id} not found");
+        }
+
+        try
+        {
+            _context.SharedTasks.Remove(task);
+            await _context.SaveChangesAsync();
+            return new ResultPackage<bool>(true, ResultStatus.OK, $"Shared task with Id {id} successfully deleted");
+        }
+        catch (Exception)
+        {
+            return new ResultPackage<bool>(false, ResultStatus.InternalServerError, $"Error updating the database entry");
+        }
     }
 
     public async Task<ResultPackage<bool>> LogicalDeleteTaskAsync(int id, int userId)

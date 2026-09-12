@@ -349,3 +349,14 @@
   border-radius: 4px;
   margin-bottom: 15px;
 }
+.shared-delete-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.shared-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

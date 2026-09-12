@@ -4,7 +4,7 @@ import AIChat from '../../components/AIChat';
 import { Link } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import type { Task } from './dtos/task';
-import { getAllTasks, deactivateTask, shareTask, getSharedTasks, getAllUsers, searchTasks } from '../../apiEndpoints';
+import { getAllTasks, deactivateTask, shareTask, getSharedTasks, getAllUsers, searchTasks, deleteSharedTask } from '../../apiEndpoints';
 import DateFormatter from '../../components/DateFormatter';
 import type { SharedTask, User } from './dtos';
 import { FiX } from 'react-icons/fi';
@@ -143,6 +143,32 @@ const TasksPage: React.FC = () => {
       setSharedTasks(sharedTasks.tasks || []);
     } catch (err) {
       setShareError(err instanceof Error ? err.message : 'Failed to load shared tasks');
+    } finally {
+      setShareLoading(false);
+    }
+  };
+
+  const handleRemoveSharedTask = async (taskId: number) => {
+    try {
+      setShareLoading(true);
+      setShareError(null);
+
+      const resp = await fetch(`${deleteSharedTask}/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!resp.ok) {
+        const txt = await resp.text();
+        throw new Error(txt || `Failed to remove shared task (${resp.status})`);
+      }
+
+      setSharedTasks(prev => prev.filter(t => t.id !== taskId));
+
+    } catch (err) {
+      setShareError(err instanceof Error ? err.message : 'Failed to remove shared task');
     } finally {
       setShareLoading(false);
     }
@@ -298,6 +324,7 @@ const TasksPage: React.FC = () => {
                             <th>Shared By</th>
                             <th>Start Date</th>
                             <th>End Date</th>
+                            <th>Actions</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -307,6 +334,16 @@ const TasksPage: React.FC = () => {
                               <td>{task.sharedByUserName || 'Unknown'}</td>
                               <td><DateFormatter dateString={task.startDate} /></td>
                               <td><DateFormatter dateString={task.endDate} /></td>
+                              <td>
+                                <button
+                                  className="shared-delete-btn"
+                                  onClick={() => handleRemoveSharedTask(task.id)}
+                                  disabled={shareLoading}
+                                  title="Remove this shared task"
+                                >
+                                  🗑️
+                                </button>
+                              </td>
                             </tr>
                           ))}
                         </tbody>

@@ -62,35 +62,6 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPost("create")]
-    public async Task<IActionResult> Post([FromBody] CreateUserDto newUser)
-    {
-        if (string.IsNullOrEmpty(newUser.Email))
-        {
-            return BadRequest("Email required");
-        }
-
-        if (string.IsNullOrEmpty(newUser.Username))
-        {
-            return BadRequest("Username required");
-        }
-
-        ResultPackage<User> response = await _usersService.CreateUserAsync(newUser);
-        
-        if (response.Status == ResultStatus.BadRequest)
-        {
-            return BadRequest(response.Message);
-        }
-
-        if (response.Status == ResultStatus.InternalServerError)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, 
-                "An error occurred while processing your request.");
-        }
-
-        return Created($"api/users/{response.Data?.Id}", response.Data);
-    }
-
     [HttpPut("update")]
     [Authorize]
     public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto updatedUser)

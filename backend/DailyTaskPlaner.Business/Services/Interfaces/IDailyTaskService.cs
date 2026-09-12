@@ -16,6 +16,7 @@ public interface IDailyTaskService
     Task<ResultPackage<bool>> DeleteTaskAsync(int id, int userId);
     Task<ShareTaskResult> ShareTaskAsync(int userId, int friendId, List<int> taskIds);
     Task<List<GetSharedTaskDto>> GetAllSharedTasksAsync(int userId);
+    Task<ResultPackage<bool>> DeleteSharedTaskAsync(int id, int userId);
     Task<ResultPackage<bool>> LogicalDeleteTaskAsync(int id, int userId);
     Task<List<DailyTask>> SearchDailyTaskAsync(int userId, string? inputQuery, DateTime? startDate, DateTime? endDate);
 
