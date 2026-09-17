@@ -6,6 +6,8 @@ export const clearLLMChatHistory = `${API_URL}/Ai/clear-chat-history`;
 
 // auth
 export const login = `${API_URL}/Auth/login`;
+export const requestPasswordReset = `${API_URL}/Auth/reset-password`;
+export const setNewPassword = `${API_URL}/Auth/set-new-password`;
 
 // users
 export const getAllUsers = `${API_URL}/Users/get-all`;

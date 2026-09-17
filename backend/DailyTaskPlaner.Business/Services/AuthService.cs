@@ -19,6 +19,10 @@ namespace DailyTaskPlaner.Business.Services
         private readonly IConfiguration _configuration;
         private readonly AppDbContext _context;
         private readonly PasswordHasher<User> _passwordHasher;
+
+        
+        private static readonly TimeSpan ResetTokenLifetime = TimeSpan.FromMinutes(30);
+
         public AuthService(AppDbContext context, IConfiguration configuration, PasswordHasher<User> passwordHasher)
         {
             _context = context;
@@ -145,19 +149,87 @@ namespace DailyTaskPlaner.Business.Services
             }
         }
 
-        public async Task<string?> ResetPassword(string email)
+        /// <summary>
+        /// Issues a permit to set a new password and returns the raw token, which the
+        /// caller puts into the link it mails out.
+        ///
+        /// The password itself is left alone. It changes only in SetNewPasswordAsync,
+        /// once the user proves the mail reached them, so a mail that never arrives
+        /// leaves the account exactly as it was.
+        /// </summary>
+        public async Task<ResultPackage<string>> RequestPasswordResetAsync(string email)
         {
             User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (user is null)
             {
-                return null;
+                return new ResultPackage<string>(ResultStatus.NotFound,
+                                                 "No user found with that email address.");
             }
 
-            string newPassword = GenerateSecureRandomString(10);
-            user.PasswordHash = _passwordHasher.HashPassword(user, newPassword);
+            // Any permit issued earlier is spent, so the newest link is the only one that works.
+            var pending = await _context.PasswordResetTokens
+                .Where(t => t.UserId == user.Id && t.UsedOnUtc == null)
+                .ToListAsync();
+
+            foreach (var token in pending)
+            {
+                token.UsedOnUtc = DateTime.UtcNow;
+            }
+
+            string rawToken = GenerateUrlSafeToken();
+
+            _context.PasswordResetTokens.Add(new PasswordResetToken
+            {
+                UserId = user.Id,
+                TokenHash = HashToken(rawToken),
+                ExpiresOnUtc = DateTime.UtcNow.Add(ResetTokenLifetime)
+            });
+
             await _context.SaveChangesAsync();
 
-            return newPassword;
+            return new ResultPackage<string>(rawToken, ResultStatus.OK,
+                                             "Password reset link created.");
+        }
+
+        /// <summary>
+        /// Spends the token and sets the new password. Refusals say nothing about why,
+        /// so an unknown, spent and expired token look the same from the outside.
+        /// </summary>
+        public async Task<ResultPackage<bool>> SetNewPasswordAsync(SetNewPasswordDto request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Token) || string.IsNullOrWhiteSpace(request.NewPassword))
+            {
+                return new ResultPackage<bool>(ResultStatus.BadRequest,
+                                               "Token and new password are required.");
+            }
+
+            string tokenHash = HashToken(request.Token);
+
+            PasswordResetToken? resetToken = await _context.PasswordResetTokens
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.TokenHash == tokenHash);
+
+            if (resetToken is null || resetToken.UsedOnUtc is not null
+                                   || resetToken.ExpiresOnUtc <= DateTime.UtcNow)
+            {
+                return new ResultPackage<bool>(ResultStatus.BadRequest,
+                                               "This password reset link is no longer valid.");
+            }
+
+            resetToken.User.PasswordHash = _passwordHasher.HashPassword(resetToken.User, request.NewPassword);
+            resetToken.UsedOnUtc = DateTime.UtcNow;
+
+            // Sessions opened with the old password end here, since whoever changed the
+            // password may be locking someone else out on purpose.
+            var refreshTokens = await _context.RefreshTokens
+                .Where(rt => rt.UserId == resetToken.UserId)
+                .ToListAsync();
+
+            _context.RefreshTokens.RemoveRange(refreshTokens);
+
+            await _context.SaveChangesAsync();
+
+            return new ResultPackage<bool>(true, ResultStatus.OK, "Password changed successfully.");
         }
 
         private string CreateToken(User user)
@@ -189,23 +261,20 @@ namespace DailyTaskPlaner.Business.Services
             return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
         }
 
-        private string GenerateSecureRandomString(int length)
+        /// <summary>256 bits of randomness, encoded so it survives being part of a URL.</summary>
+        private static string GenerateUrlSafeToken()
         {
-            const string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var randomBytes = new byte[length];
+            return Base64UrlEncoder.Encode(RandomNumberGenerator.GetBytes(32));
+        }
 
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomBytes);
-            }
-
-            var result = new StringBuilder(length);
-            foreach (byte b in randomBytes)
-            {
-                result.Append(validChars[b % validChars.Length]);
-            }
-
-            return result.ToString();
+        /// <summary>
+        /// The database keeps only this. A plain hash is enough here, unlike for passwords,
+        /// because the token is long and random rather than something a person made up.
+        /// </summary>
+        private static string HashToken(string rawToken)
+        {
+            byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(rawToken));
+            return Convert.ToHexString(hash);
         }
     }
 }

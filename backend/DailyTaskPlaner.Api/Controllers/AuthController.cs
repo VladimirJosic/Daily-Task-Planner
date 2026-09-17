@@ -8,7 +8,7 @@ namespace DailyTaskPlaner.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(IAuthService authService, IEmailService emailService) : ControllerBase
+public class AuthController(IAuthService authService, IEmailService emailService, IConfiguration configuration) : ControllerBase
 {
     [HttpPost("register")]
     public async Task<ActionResult> Register(UserDto request)
@@ -70,25 +70,56 @@ public class AuthController(IAuthService authService, IEmailService emailService
             return BadRequest("Email address is required");
         }
 
-        string? newPassword = await authService.ResetPassword(email);
-        if (newPassword is null)
+        var result = await authService.RequestPasswordResetAsync(email);
+
+        if (result.Status == ResultStatus.NotFound || result.Data is null)
         {
             return NotFound("User not found");
         }
 
         try
         {
-            string emailSubject = "Your Password Has Been Reset";
-            string emailBody = $"Your new temporary password is: {newPassword}\n\n" +
-                           "Please change this password immediately after logging in.";
+            string resetLink = BuildResetLink(result.Data);
+
+            string emailSubject = "Reset your Daily Task Planner password";
+            string emailBody = "Open the link below to choose a new password:\n\n" +
+                               resetLink + "\n\n" +
+                               "The link is valid for 30 minutes and can be used once. " +
+                               "If you did not ask for this, ignore this message: " +
+                               "your password stays as it is.";
 
             await emailService.SendEmailAsync(email, emailSubject, emailBody);
             return Ok(new { Message = "Password reset email sent successfully" });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
             "An error occurred while processing your request. Failed to send email.");
         }
+    }
+
+    [HttpPost("set-new-password")]
+    public async Task<IActionResult> SetNewPassword([FromBody] SetNewPasswordDto request)
+    {
+        var result = await authService.SetNewPasswordAsync(request);
+
+        return result.Status switch
+        {
+            ResultStatus.OK => Ok(new { Message = result.Message }),
+            ResultStatus.BadRequest => BadRequest(result.Message),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, result.Message)
+        };
+    }
+
+    /// <summary>
+    /// The link points at the client application, not at this API, because the user
+    /// has to be shown a form before anything is changed.
+    /// </summary>
+    private string BuildResetLink(string token)
+    {
+        string clientUrl = configuration["App:ClientUrl"]?.TrimEnd('/')
+                           ?? throw new InvalidOperationException("App:ClientUrl missing");
+
+        return $"{clientUrl}/reset-password?token={Uri.EscapeDataString(token)}";
     }
 }

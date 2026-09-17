@@ -7,6 +7,7 @@ import UpdateUser from './UpdateUserData.tsx';
 import UserData from './UserData.tsx';
 import Month from './Month.tsx'
 import Password from './pages/auth/Password.tsx';
+import ResetPassword from './pages/auth/ResetPassword.tsx';
 import AddTask from './pages/tasks/AddTask.tsx';
 import TasksPage from './pages/tasks/TasksPage.tsx';
 import Signup from './pages/auth/Signup.tsx';
@@ -19,6 +20,7 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<Password />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/mainpage" element={<MainPage />} />
           <Route path="/week" element={<Week />} />
           <Route path="/update-user" element={<UpdateUser />} />

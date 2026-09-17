@@ -10,5 +10,6 @@ public interface IAuthService
     Task<LoginResponseDto?> LoginAsync(LoginUserDto request);
     Task<ResultPackage<bool>> LogoutAsync(string refreshToken);
     Task<ResultPackage<TokenResponseDto?>> RefreshTokensAsync(RefreshTokenRequestDto request);
-    Task<string?> ResetPassword(string email);
+    Task<ResultPackage<string>> RequestPasswordResetAsync(string email);
+    Task<ResultPackage<bool>> SetNewPasswordAsync(SetNewPasswordDto request);
 }

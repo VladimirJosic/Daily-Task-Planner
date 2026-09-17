@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<DailyTask> DailyTasks { get; set; }
     public DbSet<SharedTask> SharedTasks { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
     public DbSet<AIChatHistory> AIChatHistory { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -51,6 +52,18 @@ public class AppDbContext : DbContext
             .HasOne(st => st.DailyTask)
             .WithMany(dt => dt.SharedWith)
             .HasForeignKey(st => st.DailyTaskId);
+
+        // Every reset request looks the token up by its hash, and the hash is unique
+        // because two live tokens must never lead to the same account.
+        modelBuilder.Entity<PasswordResetToken>()
+            .HasIndex(t => t.TokenHash)
+            .IsUnique();
+
+        modelBuilder.Entity<PasswordResetToken>()
+            .HasOne(t => t.User)
+            .WithMany()
+            .HasForeignKey(t => t.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         base.OnModelCreating(modelBuilder);
     }

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import './Signup.css';
 import theLogo from '../../assets/logo.png';
 import { useTranslation } from 'react-i18next';
+import { requestPasswordReset } from '../../apiEndpoints';
 
 const Password = () => {
   const [email, setEmail] = useState('');
@@ -14,7 +15,7 @@ const Password = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/Auth/reset-password?email=${encodeURIComponent(email)}`,
+        `${requestPasswordReset}?email=${encodeURIComponent(email)}`,
         {
           method: 'POST',
         }
