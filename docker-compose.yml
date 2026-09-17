@@ -1,0 +1,54 @@
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: ${SA_PASSWORD}
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      # Shared with the microservice version, so both systems run the very same
+      # model files instead of two separate downloads.
+      - dtp_ollama_data:/root/.ollama
+
+  api:
+    build:
+      context: .
+      dockerfile: backend/DailyTaskPlaner.Api/Dockerfile
+    ports:
+      - "7000:8080"
+    depends_on:
+      - sql
+      - ollama
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Server=sql;Database=DailyTaskPlaner;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
+      Ollama__BaseUrl: "http://ollama:11434/"
+      # The link in the password reset mail is opened by the browser, so it points
+      # at the address the client application is published on, not at the service.
+      App__ClientUrl: "http://localhost:3000"
+      Smtp__SenderEmail: "${Smtp__SenderEmail}"
+      Smtp__Pass: "${Smtp__Pass}"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  sql_data:
+  dtp_ollama_data:
+    external: true

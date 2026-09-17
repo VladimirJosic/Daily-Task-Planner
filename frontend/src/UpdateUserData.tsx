@@ -26,7 +26,7 @@ const UpdateUser = () => {
 
   const handleSave = async () => {
   try {
-    const res = await fetch(`http://localhost:3000/api/users/update`, {
+    const res = await fetch(`/api/users/update`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

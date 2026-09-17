@@ -36,7 +36,7 @@ const Month: React.FC = () => {
 
   const daysInMonth = getDaysInMonth(currentYear, currentMonth);
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-  const tasksApiUrl = import.meta.env.VITE_API_DAILY_TASK_URL || "http://localhost:3000/api/DailyTask";
+  const tasksApiUrl = import.meta.env.VITE_API_DAILY_TASK_URL || "/api/DailyTask";
   const { accessToken } = useAuth();
 
   useEffect(() => {

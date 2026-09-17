@@ -1,4 +1,4 @@
-import './MainPage.css'; // bolje da se CSS za ovu stranicu zove tako
+import './MainPage.css';
 import theLogo from './assets/logo.png';
 
 const MainPage = () => {
